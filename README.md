@@ -50,7 +50,7 @@ Natural Attacks:
 
 ## License
 
-This product is licensed under the MIT License - see the 
+This product is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International License - see the 
 [LICENSE.md](LICENSE.md) for details.
 
 ## Acknowledgements
