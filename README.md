@@ -1,5 +1,4 @@
-# PFSMM
-## PathfinderSimpleMonsterMaker
+# PFSMM - PathfinderSimpleMonsterMaker
 
 PFSMM creates statblocks for the Pathfinder RPG using Paizo's Simple 
 Monster Creation rules. 
