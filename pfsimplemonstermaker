@@ -1,0 +1,302 @@
+#!/usr/bin/python
+from math import floor, ceil
+import argparse
+
+class Combatant:
+   
+    # This function builds the object
+    def __init__(self, CR):
+        self.CR = int(CR)
+        self.AC = int(floor((1.23*CR)+13.5))
+        self.TouchAC = int(max(floor((0.68*CR)+8.99), 12))
+        self.FFAC = int(max(floor((0.913*CR)+9.99), 12))
+        self.Fort = int(floor((.909*CR)+2.59))
+        self.Ref = int(floor((.909*CR)+2.59))
+        self.Will = int(floor((.854*CR)+0.88))
+        self.CMD = int(floor((1.39*CR)+15.7))
+
+        if (CR < 7):
+            self.HP = int(ceil(9.57 + (4.57 * CR) + (1.07 * (CR * CR))))
+        else:
+            self.HP = int(ceil(54.2 - (.693 * CR) + (.909 * (CR * CR))))
+        
+        self.ADC = int(floor(.763*CR+10.2))
+        self.SDC = int(floor(.456*CR+9.22))
+        self.MSkill = int(floor(1.62*CR+5.05))
+        self.GSkill = int(floor(1.36*CR+3.32))
+        self.Options1 = int(max(1, floor(.0957*CR+0.68)))
+        self.Options2 = int(min(1, floor(CR/2)))
+        
+        self.HighWeaponToHit = int(floor(1.3*CR+5.09))
+        if (CR < 5):
+            self.HighWeaponDamage = int(floor(3*(CR) + 5))
+        elif ((CR < 10) and (CR >= 5)):
+            self.HighWeaponDamage = int(floor(3.6*(CR) - 3.2))
+        elif ((CR < 15) and (CR >= 10)):
+            self.HighWeaponDamage = int(floor(3.2 * (CR) - 3.6))
+        else:
+            self.HighWeaponDamage = int(floor(7.15 * (CR) - 70.8))
+        
+        self.LowWeaponToHit = int(floor(1.06*CR+2.85))
+        if (CR < 5):
+            self.LowWeaponDamage = int(floor(2.3*(CR) + 3.5))
+        elif ((CR < 10) and (CR >= 5)):
+            self.LowWeaponDamage = int(floor(2.8*(CR) - 3.4))
+        elif ((CR < 15) and (CR >= 10)):
+            self.LowWeaponDamage = int(floor(2.3 * (CR) - 2))
+        else:
+            self.LowWeaponDamage = int(floor(5.19 * (CR) - 49.6))
+
+        self.TwoNaturalToHit = int(floor(1.32*CR+4.59))
+        self.TwoNaturalDamage = int(floor(6.79 + (.156 * CR) + (.142 * (CR * CR))))
+        self.ThreeNaturalToHitH = int(floor(1.32*CR+4.59))
+        self.ThreeNaturalToHitL = int(floor(1.32*CR-.409))
+        self.ThreeNaturalDamageH = int(floor(8.5 + (.283*(CR)) + (.187*(CR*CR))))
+        self.ThreeNaturalDamageL = int(floor(4.91 + (.082*(CR) + (.0953*(CR*CR)))))
+
+    # This returns what type of object it is, I think
+    def __repr(self):
+        return "Combatant()"
+    
+    # This function is run whenever a Combatant object is printed
+    def __str__(self):
+        printer = "Combatant CR " + str(self.CR) + "\n"
+        printer += "AC: " + str(self.AC) + "  Touch: " + str(self.TouchAC)
+        printer += "  FF: " + str(self.FFAC) + " | " + str(self.HP) + "hp" 
+        printer += "  CMD: " + str(self.CMD) + "\n"
+        printer += "Fort: " + str(self.Fort) + "  Ref: " + str(self.Ref)
+        printer += "  Will: " + str(self.Will) + " | ADC: " + str(self.ADC)
+        printer += "  SDC: " + str(self.SDC) + "\n"
+        printer += "1 +" + str(self.MSkill) + " skill, 2 +" + str(self.GSkill) + " skills\n"
+        printer += str(self.Options1) + " combat option(s)"
+        if (self.Options2) > 0:
+            printer += ", 1 any option"
+        printer += "\nWeapon Attacks:\n"
+        printer += "High Weapon: +" + str(self.HighWeaponToHit)
+        if (self.CR > 4):
+            printer += "/+" + str(self.HighWeaponToHit - 5)
+        if (self.CR > 9):
+            printer += "/+" + str(self.HighWeaponToHit - 10)
+        if (self.CR > 14):
+            printer += "/+" + str(self.HighWeaponToHit - 15)
+        printer += " for (" + str(self.HighWeaponDamage) + ") damage | "
+        printer += "Low Weapon: +" + str(self.LowWeaponToHit)
+        if (self.CR > 4):
+            printer += "/+" + str(self.LowWeaponToHit - 5)
+        if (self.CR > 9):
+            printer += "/+" + str(self.LowWeaponToHit - 10)
+        if (self.CR > 14):
+            printer += "/+" + str(self.LowWeaponToHit - 15)
+        printer += " for (" + str(self.LowWeaponDamage) + ") damage\n"
+        printer += "Natural Attacks:\n"
+        printer += "2 at +" + str(self.TwoNaturalToHit) + " for (" + str(self.TwoNaturalDamage) + ") damage | "
+        printer += "1 at +" + str(self.ThreeNaturalToHitH) + " for (" + str(self.ThreeNaturalDamageH) + ") damage"
+        printer += ", 2 at +" + str(self.ThreeNaturalToHitL) + " for (" + str(self.ThreeNaturalDamageL) + ") damage\n"     
+        return printer
+
+class Expert:
+   
+    # This function builds the object
+    def __init__(self, CR):
+        self.CR = int(CR)
+        self.AC = int(floor((1.23*CR)+11.5))
+        self.TouchAC = int(max(floor((0.738*CR)+6.56), 10))
+        self.FFAC = int(floor(.921*CR+8.38))
+        self.Fort = int(floor((.909*CR)+.0253))
+        self.Ref = int(floor((.909*CR)+.0253))
+        self.Will = int(floor((.909*CR)+3.68))
+        self.CMD = int(floor((1.39*CR)+12.3))
+
+        if (CR < 7):
+            self.HP = int(ceil(11 + (2.39 * CR) + (1.25 * (CR * CR))))
+        else:
+            self.HP = int(ceil(49.3 - (.628 * CR) + (.827 * (CR * CR))))
+        
+        self.ADC = int(floor(.763*CR+11.5))
+        self.SDC = int(floor(floor(13.3 - (.016 * CR) + (.015 * (CR * CR)))))
+        self.MSkill = int(floor(8.33 + (.705 * CR) + (.0296 * (CR * CR))))
+        self.GSkill = int(floor(5.76 + (.646 * CR) + (.0229 * (CR * CR))))
+        self.Options1 = int(max(1, floor(.0957*CR+0.68)))
+        self.Options2 = int(min(1, floor(CR/2)))
+        
+        self.HighWeaponToHit = int(ceil(1.09 + (1.8 * CR) - (.0163 * (CR * CR))))
+        if (CR < 7):
+            self.HighWeaponDamage = int(floor(3.29*(CR) + 3.33))
+        elif ((CR < 14) and (CR >= 7)):
+            self.HighWeaponDamage = int(floor(3.21*(CR) - 2.57))
+        elif ((CR < 21) and (CR >= 14)):
+            self.HighWeaponDamage = int(floor(5.36 * (CR) - 39.4))
+        else:
+            self.HighWeaponDamage = int(floor(7.6 * (CR) - 93))
+        
+        self.LowWeaponToHit = int(floor(1.79 + (1.06 * CR)))
+        if (CR < 7):
+            self.LowWeaponDamage = int(floor(2.63*(CR) + 1.8))
+        elif ((CR < 14) and (CR >= 7)):
+            self.LowWeaponDamage = int(floor(2.5*(CR) - 2.71))
+        elif ((CR < 21) and (CR >= 14)):
+            self.LowWeaponDamage = int(floor(4 * (CR) - 29.3))
+        else:
+            self.LowWeaponDamage = int(floor(5.32 * (CR) - 61.1))
+
+        self.TwoNaturalToHit = int(floor(1.08*CR+1.27))
+        self.TwoNaturalDamage = int(floor(6.42 + (.0942 * CR) + (.131 * (CR * CR))))
+        self.ThreeNaturalToHitH = int(floor(1.08*CR+1.27))
+        self.ThreeNaturalToHitL = int(floor(1.08*CR-3.73))
+        self.ThreeNaturalDamageH = int(floor(8.03 + (.227*(CR)) + (.171*(CR*CR))))
+        self.ThreeNaturalDamageL = int(floor(4.75 + (.0518*(CR) + (.0868*(CR*CR)))))
+
+    # This returns what type of object it is, I think
+    def __repr(self):
+        return "Expert()"
+    
+    # This function is run whenever an Expert object is printed
+    def __str__(self):
+        printer = "Expert CR " + str(self.CR) + "\n"
+        printer += "AC: " + str(self.AC) + "  Touch: " + str(self.TouchAC)
+        printer += "  FF: " + str(self.FFAC) + " | " + str(self.HP) + "hp" 
+        printer += "  CMD: " + str(self.CMD) + "\n"
+        printer += "Fort: " + str(self.Fort) + "  Ref: " + str(self.Ref)
+        printer += "  Will: " + str(self.Will) + " | ADC: " + str(self.ADC)
+        printer += "  SDC: " + str(self.SDC) + "\n"
+        printer += "3 +" + str(self.MSkill) + " skill, 2 +" + str(self.GSkill) + " skills\n"
+        printer += str(self.Options1) + " any option(s)"
+        if (self.Options2) > 0:
+            printer += ", 1 social option"
+        printer += "\nWeapon Attacks:\n"
+        printer += "High Weapon: +" + str(self.HighWeaponToHit)
+        if (self.CR > 6):
+            printer += "/+" + str(self.HighWeaponToHit - 5)
+        if (self.CR > 13):
+            printer += "/+" + str(self.HighWeaponToHit - 10)
+        if (self.CR > 20):
+            printer += "/+" + str(self.HighWeaponToHit - 15)
+        printer += " for (" + str(self.HighWeaponDamage) + ") damage | "
+        printer += "Low Weapon: +" + str(self.LowWeaponToHit)
+        if (self.CR > 6):
+            printer += "/+" + str(self.LowWeaponToHit - 5)
+        if (self.CR > 13):
+            printer += "/+" + str(self.LowWeaponToHit - 10)
+        if (self.CR > 20):
+            printer += "/+" + str(self.LowWeaponToHit - 15)
+        printer += " for (" + str(self.LowWeaponDamage) + ") damage\n"
+        printer += "Natural Attacks:\n"
+        printer += "2 at +" + str(self.TwoNaturalToHit) + " for (" + str(self.TwoNaturalDamage) + ") damage | "
+        printer += "1 at +" + str(self.ThreeNaturalToHitH) + " for (" + str(self.ThreeNaturalDamageH) + ") damage"
+        printer += ", 2 at +" + str(self.ThreeNaturalToHitL) + " for (" + str(self.ThreeNaturalDamageL) + ") damage\n"     
+        return printer
+
+class Spellcaster:
+   
+    # This function builds the object
+    def __init__(self, CR):
+        self.CR = int(CR)
+        self.AC = int(floor((1.23*CR)+11.5) - 2)
+        self.TouchAC = int(max(floor((0.738*CR)+6.56), 10) - 1)
+        self.FFAC = int(floor(.921*CR+8.38) - 2)
+        self.Fort = int(floor((.909*CR)+.0253))
+        self.Ref = int(floor((.909*CR)+.0253))
+        self.Will = int(floor((.909*CR)+3.68))
+        self.CMD = int(floor((1.39*CR)+12.3) - 2)
+
+        if (CR < 7):
+            self.HP = int(ceil(9.3 + (2.43 * CR) + (1.09 * (CR * CR))))
+        else:
+            self.HP = int(ceil(43.6 - (.496 * CR) + (.742 * (CR * CR))))
+        
+        self.ADC = int(floor(.763*CR+11.5))
+        self.SDC = int(floor(13.3 - (.016 * CR) + (.015 * (CR * CR))) + 2)
+        self.MSkill = int(floor(8.33 + (.705 * CR) + (.0296 * (CR * CR))))
+        self.GSkill = int(floor(5.76 + (.646 * CR) + (.0229 * (CR * CR))))
+        self.Options1 = int(max(1, floor(.0957*CR+0.68)))
+        self.Options2 = int(min(1, floor(CR/2)))
+        
+        self.HighWeaponToHit = int(ceil(1.09 + (1.8 * CR) - (.0163 * (CR * CR))))
+        if (CR < 7):
+            self.HighWeaponDamage = int(floor(3.29*(CR) + 3.33))
+        elif ((CR < 14) and (CR >= 7)):
+            self.HighWeaponDamage = int(floor(3.21*(CR) - 2.57))
+        elif ((CR < 21) and (CR >= 14)):
+            self.HighWeaponDamage = int(floor(5.36 * (CR) - 39.4))
+        else:
+            self.HighWeaponDamage = int(floor(7.6 * (CR) - 93))
+        
+        self.LowWeaponToHit = int(floor(1.79 + (1.06 * CR)))
+        if (CR < 7):
+            self.LowWeaponDamage = int(floor(2.63*(CR) + 1.8))
+        elif ((CR < 14) and (CR >= 7)):
+            self.LowWeaponDamage = int(floor(2.5*(CR) - 2.71))
+        elif ((CR < 21) and (CR >= 14)):
+            self.LowWeaponDamage = int(floor(4 * (CR) - 29.3))
+        else:
+            self.LowWeaponDamage = int(floor(5.32 * (CR) - 61.1))
+
+        self.TwoNaturalToHit = int(floor(1.08*CR+1.27))
+        self.TwoNaturalDamage = int(floor(6.42 + (.0942 * CR) + (.131 * (CR * CR))))
+        self.ThreeNaturalToHitH = int(floor(1.08*CR+1.27))
+        self.ThreeNaturalToHitL = int(floor(1.08*CR-3.73))
+        self.ThreeNaturalDamageH = int(floor(8.03 + (.227*(CR)) + (.171*(CR*CR))))
+        self.ThreeNaturalDamageL = int(floor(4.75 + (.0518*(CR) + (.0868*(CR*CR)))))
+
+    # This returns what type of object it is, I think
+    def __repr(self):
+        return "Spellcaster()"
+    
+    # This function is run whenever a Spellcaster object is printed
+    def __str__(self):
+        printer = "Spellcaster CR " + str(self.CR) + "\n"
+        printer += "AC: " + str(self.AC) + "  Touch: " + str(self.TouchAC)
+        printer += "  FF: " + str(self.FFAC) + " | " + str(self.HP) + "hp" 
+        printer += "  CMD: " + str(self.CMD) + "\n"
+        printer += "Fort: " + str(self.Fort) + "  Ref: " + str(self.Ref)
+        printer += "  Will: " + str(self.Will) + " | ADC: " + str(self.ADC)
+        printer += "  SDC: " + str(self.SDC) + "\n"
+        printer += "2 +" + str(self.MSkill) + " skills, 1 +" + str(self.GSkill) + " skills\n"
+        printer += str(self.Options1) + " magic option(s)"
+        if (self.Options2) > 0:
+            printer += ", 1 any option"
+        printer += "\nWeapon Attacks:\n"
+        printer += "High Weapon: +" + str(self.HighWeaponToHit)
+        if (self.CR > 6):
+            printer += "/+" + str(self.HighWeaponToHit - 5)
+        if (self.CR > 13):
+            printer += "/+" + str(self.HighWeaponToHit - 10)
+        if (self.CR > 20):
+            printer += "/+" + str(self.HighWeaponToHit - 15)
+        printer += " for (" + str(self.HighWeaponDamage) + ") damage | "
+        printer += "Low Weapon: +" + str(self.LowWeaponToHit)
+        if (self.CR > 6):
+            printer += "/+" + str(self.LowWeaponToHit - 5)
+        if (self.CR > 13):
+            printer += "/+" + str(self.LowWeaponToHit - 10)
+        if (self.CR > 20):
+            printer += "/+" + str(self.LowWeaponToHit - 15)
+        printer += " for (" + str(self.LowWeaponDamage) + ") damage\n"
+        printer += "Natural Attacks:\n"
+        printer += "2 at +" + str(self.TwoNaturalToHit) + " for (" + str(self.TwoNaturalDamage) + ") damage | "
+        printer += "1 at +" + str(self.ThreeNaturalToHitH) + " for (" + str(self.ThreeNaturalDamageH) + ") damage"
+        printer += ", 2 at +" + str(self.ThreeNaturalToHitL) + " for (" + str(self.ThreeNaturalDamageL) + ") damage\n"     
+        return printer
+
+def main():
+    parser = argparse.ArgumentParser(description='Generate the stats of a Pathfinder monster using the Simple Monster Creation rules and a given CR.')
+    parser.add_argument("CR", type=float, help="Set the CR of the generated statblock")
+    parser.add_argument("-c", "--combatant", action="store_true",
+            help="generate a combatant type statblock")
+    parser.add_argument("-e", "--expert", action="store_true",
+            help="generate a expert type statblock")
+    parser.add_argument("-s", "--spellcaster", action="store_true",
+            help="generate a spellcaster type statblock")
+
+    args = parser.parse_args()
+
+    if args.combatant:
+        print(Combatant(args.CR))
+    
+    if args.expert:
+        print(Expert(args.CR))
+    
+    if args.spellcaster:
+        print(Spellcaster(args.CR))
+
+main()
